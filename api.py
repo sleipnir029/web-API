@@ -11,6 +11,7 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
+"""
 books = [
     {'id': 0,
      'title': 'A Fire Upon the Deep',
@@ -28,6 +29,8 @@ books = [
      'first_sentence': 'to wound the autumnal city.',
      'published': '1975'}
 ]
+"""
+
 
 @app.route('/', methods=['GET'])
 def home():
@@ -35,7 +38,12 @@ def home():
 
 @app.route('/api/v1/resources/books/all', methods=['GET'])
 def api_all():
-    return jsonify(books)
+    conn = sqlite3.connect('books.db')
+    conn.row_factory = dict_factory
+    cur = conn.cursor()
+    all_books = cur.execute('SELECT * FROM books;').fetchall()
+
+    return jsonify(all_books)
 
 @app.route('/api/v1/resources/books', methods=['GET'])
 def api_id():
