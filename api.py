@@ -36,6 +36,8 @@ books = [
 def home():
     return "<h1>Distant Reading Archive</h1><p>This site is a prototype API for distant reading of science fiction novels.</p>"
 
+
+
 @app.route('/api/v1/resources/books/all', methods=['GET'])
 def api_all():
     conn = sqlite3.connect('books.db')
@@ -44,6 +46,13 @@ def api_all():
     all_books = cur.execute('SELECT * FROM books;').fetchall()
 
     return jsonify(all_books)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return "<h1>404</h1><p>The resource could not be found.</p>", 404
+
+
 
 @app.route('/api/v1/resources/books', methods=['GET'])
 def api_id():
@@ -59,5 +68,6 @@ def api_id():
             results.append(book)
     
     return jsonify(results)
+
 
 app.run()
